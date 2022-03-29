@@ -252,6 +252,11 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<BloodPressureSampleValue>) => void,
     ): void
 
+    saveBloodPressureSample(
+      options: BloodPressureValueOptions,
+      callback: (error: string, result: HealthValue) => void,
+    ): void
+
     getRespiratoryRateSamples(
       options: HealthInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
@@ -468,6 +473,12 @@ declare module 'react-native-health' {
     value: number
     startDate?: string
     endDate?: string
+  }
+
+  export interface BloodPressureValueOptions {
+    bloodPressureSystolicValue: number;
+    bloodPressureDiastolicValue: number;
+    date: string;
   }
 
   export interface HealthActivityOptions

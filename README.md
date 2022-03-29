@@ -243,6 +243,7 @@ they are splitted in the following categories
 #### Vitals Methods
 
 - [getBloodPressureSamples](/docs/getBloodPressureSamples.md)
+- [saveBloodPressureSample](/docs/saveBloodPressureSample.md)
 - [getElectrocardiogramSamples](/docs/getElectrocardiogramSamples.md)
 - [saveHeartRateSample](/docs/saveHeartRateSample.md)
 - [getHeartRateSamples](/docs/getHeartRateSamples.md)

@@ -400,6 +400,46 @@
     }];
 }
 
+- (void)vitals_saveBloodPressureSample:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    NSDate *timeBloodPressureSampleWasTaken = [RCTAppleHealthKit dateFromOptions:input key:@"date" withDefault:[NSDate date]];
+    double bloodPressureSystolicValue = [RCTAppleHealthKit doubleFromOptions:input key:@"bloodPressureSystolicValue" withDefault:-99];
+    if(bloodPressureSystolicValue == -99){
+        callback(@[RCTMakeError(@"bloodPressureSystolicValue is required in options", nil, nil)]);
+        return;
+    }
+    double bloodPressureDiastolicValue = [RCTAppleHealthKit doubleFromOptions:input key:@"bloodPressureDiastolicValue" withDefault:-99];
+    if(bloodPressureDiastolicValue == -99){
+        callback(@[RCTMakeError(@"bloodPressureDiastolicValue is required in options", nil, nil)]);
+        return;
+    }
+
+    HKUnit *BloodPressureUnit = [HKUnit millimeterOfMercuryUnit];
+
+    HKQuantityType *SystolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+    HKQuantityType *DiastolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+
+    HKQuantity *SystolicQuantity = [HKQuantity quantityWithUnit:BloodPressureUnit doubleValue:bloodPressureSystolicValue];
+    HKQuantity *DiastolicQuantity = [HKQuantity quantityWithUnit:BloodPressureUnit doubleValue:bloodPressureDiastolicValue];
+
+
+    HKQuantitySample *SystolicSample = [HKQuantitySample quantitySampleWithType:SystolicType quantity:SystolicQuantity startDate:timeBloodPressureSampleWasTaken endDate:timeBloodPressureSampleWasTaken];
+    HKQuantitySample *DiastolicSample = [HKQuantitySample quantitySampleWithType:DiastolicType quantity:DiastolicQuantity startDate:timeBloodPressureSampleWasTaken endDate:timeBloodPressureSampleWasTaken];
+    
+    NSSet *objects=[NSSet setWithObjects:SystolicSample,DiastolicSample, nil];
+    HKCorrelationType *bloodPressureType = [HKObjectType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
+    HKCorrelation *BloodPressure = [HKCorrelation correlationWithType:bloodPressureType startDate:timeBloodPressureSampleWasTaken endDate:timeBloodPressureSampleWasTaken objects:objects];
+
+    [self.healthStore saveObject:BloodPressure withCompletion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"An error occured saving the blood pressure sample: %@", BloodPressure, error);
+            callback(@[RCTMakeError(@"An error occured saving the blood pressure sample: ", error, nil)]);
+            return;
+        }
+        callback(@[[NSNull null], @true]);
+    }];
+}
+
 
 - (void)vitals_getRespiratoryRateSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {

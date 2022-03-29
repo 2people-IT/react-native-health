@@ -374,6 +374,14 @@
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
     }
 
+    // Heart (Vitals)
+    if ([@"BloodPressureSystolic" isEqualToString: key]) {
+        return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+    } 
+    if ([@"BloodPressureDiastolic" isEqualToString: key]) {
+        return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+    }
+
     return nil;
 }
 
